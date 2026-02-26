@@ -136,3 +136,10 @@ fun LoginScreen(viewModel: AuthViewModel?) {
     }
 }
 
+@Preview(showBackground = true)
+@Composable
+fun LoginPreview() {
+    TaskLiteTheme {
+        LoginScreen(viewModel = null)
+    }
+}
