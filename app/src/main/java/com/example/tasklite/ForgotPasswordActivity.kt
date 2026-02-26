@@ -18,7 +18,20 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.tasklite.ui.theme.TaskLiteTheme
 import com.example.tasklite.viewmodel.AuthViewModel
 
+class ForgotPasswordActivity : ComponentActivity() {
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+
+        setContent {
+            TaskLiteTheme {
+                // Changed the composable to a stateful version that handles the ViewModel
+                ForgotPasswordRoute()
+            }
+        }
+    }
+}
 
 /**
  * This is a stateful composable that manages the state and logic for the ForgotPasswordScreen.
