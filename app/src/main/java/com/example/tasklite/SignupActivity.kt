@@ -81,19 +81,7 @@ fun SignupScreen(viewModel: AuthViewModel = viewModel()) {
 }
 
 // This is the new stateless composable that only displays the UI.
-@Composable
-fun SignupScreenContent(
-    email: String,
-    onEmailChange: (String) -> Unit,
-    password: String,
-    onPasswordChange: (String) -> Unit,
-    confirmPassword: String,
-    onConfirmPasswordChange: (String) -> Unit,
-    isLoading: Boolean,
-    errorMessage: String?,
-    onSignupClick: () -> Unit,
-    onLoginClick: () -> Unit
-) {
+
     Column(
         modifier = Modifier
             .fillMaxSize()
