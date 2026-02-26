@@ -6,11 +6,7 @@ class AuthRepository {
 
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
 
-    fun addAuthStateListener(listener: (Boolean) -> Unit) {
-        auth.addAuthStateListener { firebaseAuth ->
-            listener(firebaseAuth.currentUser != null)
-        }
-    }
+
 
     fun login(
         email: String,
