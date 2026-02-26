@@ -42,16 +42,7 @@ class TaskViewModel : ViewModel() {
         db.collection("tasks").add(newTask)
     }
 
-    fun updateTask(id: String, title: String, description: String, dueDate: String, status: String, category: String) {
-        val updatedTask = hashMapOf(
-            "title" to title,
-            "description" to description,
-            "dueDate" to dueDate,
-            "status" to status,
-            "category" to category
-        )
-        db.collection("tasks").document(id).set(updatedTask)
-    }
+
 
     fun deleteTask(id: String) {
         db.collection("tasks").document(id).delete()
