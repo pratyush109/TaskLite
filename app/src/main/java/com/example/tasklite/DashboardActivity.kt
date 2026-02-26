@@ -26,17 +26,81 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.tasklite.model.Task
 import com.example.tasklite.ui.theme.TaskLiteTheme
 import com.example.tasklite.ui.theme.White
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
-import com.example.tasklite.viewmodel.TaskViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+
+// --- DATA MODEL ---
+data class Task(
+    val id: String = "",
+    val title: String = "",
+    val description: String = "",
+    val dueDate: String? = null,
+    val status: String? = null,
+    val category: String? = null
+)
+
+// --- VIEWMODEL ---
+class TaskViewModel : ViewModel() {
+
+    private val _tasks = MutableStateFlow<List<Task>>(emptyList())
+    val tasks: StateFlow<List<Task>> = _tasks
+
+    private val db = FirebaseFirestore.getInstance()
+
+    init {
+        // Listen to Firestore changes
+        db.collection("tasks").addSnapshotListener { snapshot, e ->
+            if (snapshot != null) {
+                _tasks.value = snapshot.documents.map { doc ->
+                    Task(
+                        id = doc.id,
+                        title = doc.getString("title") ?: "",
+                        description = doc.getString("description") ?: "",
+                        dueDate = doc.getString("dueDate"),
+                        status = doc.getString("status"),
+                        category = doc.getString("category")
+                    )
+                }
+            }
+        }
+    }
+
+    fun addTask(title: String, description: String, dueDate: String, status: String, category: String) {
+        val newTask = hashMapOf(
+            "title" to title,
+            "description" to description,
+            "dueDate" to dueDate,
+            "status" to status,
+            "category" to category
+        )
+        db.collection("tasks").add(newTask)
+    }
+
+    fun updateTask(id: String, title: String, description: String, dueDate: String, status: String, category: String) {
+        val updatedTask = hashMapOf(
+            "title" to title,
+            "description" to description,
+            "dueDate" to dueDate,
+            "status" to status,
+            "category" to category
+        )
+        db.collection("tasks").document(id).set(updatedTask)
+    }
+
+    fun deleteTask(id: String) {
+        db.collection("tasks").document(id).delete()
+    }
+}
 
 // --- DASHBOARD ACTIVITY ---
 class DashboardActivity : ComponentActivity() {
@@ -127,7 +191,6 @@ fun HomeScreen(viewModel: TaskViewModel) {
     val categoryOptions = listOf("Work", "Personal", "Shopping", "Other")
     val tasks by viewModel.tasks.collectAsState()
 
-
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
         Text("Dashboard", style = MaterialTheme.typography.headlineMedium)
         Spacer(Modifier.height(16.dp))
@@ -154,6 +217,7 @@ fun HomeScreen(viewModel: TaskViewModel) {
                 ).show()
             })
         }
+
         Spacer(Modifier.height(8.dp))
 
         ExposedDropdownMenuBox(expanded = expandedStatus, onExpandedChange = { expandedStatus = !expandedStatus }) {
@@ -162,6 +226,7 @@ fun HomeScreen(viewModel: TaskViewModel) {
                 statusOptions.forEach { option -> DropdownMenuItem(text = { Text(option) }, onClick = { status = option; expandedStatus = false }) }
             }
         }
+
         Spacer(Modifier.height(8.dp))
 
         ExposedDropdownMenuBox(expanded = expandedCategory, onExpandedChange = { expandedCategory = !expandedCategory }) {
@@ -170,6 +235,7 @@ fun HomeScreen(viewModel: TaskViewModel) {
                 categoryOptions.forEach { option -> DropdownMenuItem(text = { Text(option) }, onClick = { category = option; expandedCategory = false }) }
             }
         }
+
         Spacer(Modifier.height(8.dp))
 
         Button(
@@ -216,20 +282,6 @@ fun TaskItem(task: Task, viewModel: TaskViewModel) {
                     val current = if (editDate.isNotEmpty()) LocalDate.parse(editDate) else LocalDate.now()
                     DatePickerDialog(context, { _, y, m, d -> editDate = LocalDate.of(y, m + 1, d).toString() }, current.year, current.monthValue - 1, current.dayOfMonth).show()
                 }, readOnly = true)
-
-                ExposedDropdownMenuBox(expanded = expandedStatus, onExpandedChange = { expandedStatus = !expandedStatus }) {
-                    TextField(editStatus, {}, label = { Text("Status") }, readOnly = true, trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expandedStatus) }, modifier = Modifier.fillMaxWidth().menuAnchor())
-                    ExposedDropdownMenu(expandedStatus, onDismissRequest = { expandedStatus = false }) {
-                        statusOptions.forEach { option -> DropdownMenuItem({ Text(option) }, onClick = { editStatus = option; expandedStatus = false }) }
-                    }
-                }
-
-                ExposedDropdownMenuBox(expanded = expandedCategory, onExpandedChange = { expandedCategory = !expandedCategory }) {
-                    TextField(editCategory, {}, label = { Text("Category") }, readOnly = true, trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expandedCategory) }, modifier = Modifier.fillMaxWidth().menuAnchor())
-                    ExposedDropdownMenu(expandedCategory, onDismissRequest = { expandedCategory = false }) {
-                        categoryOptions.forEach { option -> DropdownMenuItem({ Text(option) }, onClick = { editCategory = option; expandedCategory = false }) }
-                    }
-                }
 
                 Row {
                     Button({ viewModel.updateTask(task.id, editTitle, editDesc, editDate, editStatus, editCategory); isEditing = false }) { Text("Save") }
@@ -321,18 +373,7 @@ fun CalendarScreen(viewModel: TaskViewModel) {
 @Composable
 fun DashboardPreview() {
     TaskLiteTheme {
-        val fakeViewModel = object {
-            val tasks = mutableStateListOf(
-                Task(id = "1", title = "Buy groceries", description = "Milk, bread, eggs", dueDate = "2024-02-26", status = "Pending", category = "Shopping"),
-                Task(id = "2", title = "Walk the dog", description = "30 mins in park", dueDate = "2024-02-26", status = "Completed", category = "Personal")
-            )
-            fun addTask(task: Task) { tasks.add(task) }
-            fun updateTask(id: String, title: String, description: String) {
-                val index = tasks.indexOfFirst { it.id == id }
-                if (index >= 0) tasks[index] = tasks[index].copy(title = title, description = description)
-            }
-            fun deleteTask(id: String) { tasks.removeAll { it.id == id } }
-        }
-        DashboardBody(fakeViewModel as TaskViewModel) // Just for preview typecasting
+        val fakeViewModel = TaskViewModel() // For preview we can just instantiate
+        DashboardBody(fakeViewModel)
     }
 }
