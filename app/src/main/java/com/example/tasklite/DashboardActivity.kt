@@ -319,18 +319,7 @@ fun NotificationScreen(viewModel: TaskViewModel) {
 }
 
 // --- PROFILE ---
-@Composable
-fun ProfileScreen(email: String?, onLogout: () -> Unit) {
-    Column(modifier = Modifier.fillMaxSize().padding(24.dp), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
-        Text("Profile", style = MaterialTheme.typography.headlineMedium)
-        Spacer(Modifier.height(24.dp))
-        Text("Logged in as:", style = MaterialTheme.typography.bodyMedium)
-        Spacer(Modifier.height(4.dp))
-        Text(email ?: "No user", style = MaterialTheme.typography.titleMedium)
-        Spacer(Modifier.height(32.dp))
-        Button(onClick = onLogout, modifier = Modifier.fillMaxWidth()) { Text("Logout") }
-    }
-}
+
 
 // --- CALENDAR ---
 @Composable
@@ -367,6 +356,7 @@ fun CalendarScreen(viewModel: TaskViewModel) {
         }
     }
 }
+
 
 // --- PREVIEW ---
 @Preview(showBackground = true)
