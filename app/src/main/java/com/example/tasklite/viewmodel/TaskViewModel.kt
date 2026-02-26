@@ -53,7 +53,3 @@ class TaskViewModel : ViewModel() {
         db.collection("tasks").document(id).set(updatedTask)
     }
 
-    fun deleteTask(id: String) {
-        db.collection("tasks").document(id).delete()
-    }
-}
