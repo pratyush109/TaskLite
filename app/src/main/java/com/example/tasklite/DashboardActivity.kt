@@ -306,17 +306,7 @@ fun TaskItem(task: Task, viewModel: TaskViewModel) {
 }
 
 // --- NOTIFICATIONS ---
-@Composable
-fun NotificationScreen(viewModel: TaskViewModel) {
-    val tasks by viewModel.tasks.collectAsState()
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-        Text("Notifications", style = MaterialTheme.typography.headlineMedium)
-        Spacer(Modifier.height(16.dp))
-        val recentTasks = tasks.takeLast(5)
-        if (recentTasks.isEmpty()) Text("No new notifications.")
-        else LazyColumn { items(recentTasks) { task -> Text("- ${task.title} [${task.status}]") } }
-    }
-}
+
 
 // --- PROFILE ---
 @Composable
