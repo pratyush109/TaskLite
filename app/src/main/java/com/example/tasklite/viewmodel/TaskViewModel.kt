@@ -1,50 +1,59 @@
 package com.example.tasklite.viewmodel
 
 import androidx.lifecycle.ViewModel
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 import com.example.tasklite.model.Task
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-open class TaskViewModel : ViewModel() {
+class TaskViewModel : ViewModel() {
+
+    private val _tasks = MutableStateFlow<List<Task>>(emptyList())
+    val tasks: StateFlow<List<Task>> = _tasks
 
     private val db = FirebaseFirestore.getInstance()
-    private val uid = FirebaseAuth.getInstance().currentUser?.uid
-    private val _tasks = MutableStateFlow<List<Task>>(emptyList())
-    open val tasks: StateFlow<List<Task>> = _tasks
 
     init {
-        uid?.let { loadTasks(it) }
-    }
-
-    private fun loadTasks(userId: String) {
-        db.collection("users").document(userId).collection("tasks")
-            .addSnapshotListener { snapshot, error ->
-                if (error != null) return@addSnapshotListener
-                val list = snapshot?.documents?.mapNotNull { doc ->
-                    doc.toObject(Task::class.java)?.copy(id = doc.id)
-                } ?: emptyList()
-                _tasks.value = list
+        // Listen to Firestore changes
+        db.collection("tasks").addSnapshotListener { snapshot, e ->
+            if (snapshot != null) {
+                _tasks.value = snapshot.documents.map { doc ->
+                    Task(
+                        id = doc.id,
+                        title = doc.getString("title") ?: "",
+                        description = doc.getString("description") ?: "",
+                        dueDate = doc.getString("dueDate"),
+                        status = doc.getString("status"),
+                        category = doc.getString("category")
+                    )
+                }
             }
+        }
     }
 
-    open fun addTask(title: String, description: String, dueDate: String, status: String, category: String) {
-        val userId = uid ?: return
-        val newTask = Task("", title, description, dueDate, status, category)
-        db.collection("users").document(userId).collection("tasks")
-            .add(newTask)
+    fun addTask(title: String, description: String, dueDate: String, status: String, category: String) {
+        val newTask = hashMapOf(
+            "title" to title,
+            "description" to description,
+            "dueDate" to dueDate,
+            "status" to status,
+            "category" to category
+        )
+        db.collection("tasks").add(newTask)
     }
 
-    open fun updateTask(id: String, title: String, description: String, dueDate: String, status: String, category: String) {
-        val userId = uid ?: return
-        db.collection("users").document(userId).collection("tasks").document(id)
-            .set(Task(id, title, description, dueDate, status, category))
+    fun updateTask(id: String, title: String, description: String, dueDate: String, status: String, category: String) {
+        val updatedTask = hashMapOf(
+            "title" to title,
+            "description" to description,
+            "dueDate" to dueDate,
+            "status" to status,
+            "category" to category
+        )
+        db.collection("tasks").document(id).set(updatedTask)
     }
 
-    open fun deleteTask(id: String) {
-        val userId = uid ?: return
-        db.collection("users").document(userId).collection("tasks").document(id)
-            .delete()
+    fun deleteTask(id: String) {
+        db.collection("tasks").document(id).delete()
     }
 }
