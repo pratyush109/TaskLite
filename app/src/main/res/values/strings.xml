@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">TaskLite</string>
+    <string name="title_activity_splash_activity.kt">SplashActivity.kt</string>
+    <string name="title_activity_login_activity.kt">LoginActivity.kt</string>
+    <string name="title_activity_signup">SignupActivity</string>
+    <string name="title_activity_forgot_password">ForgotPasswordActivity</string>
+    <string name="title_activity_home">HomeActivity</string>
+    <string name="title_activity_profile">ProfileActivity</string>
+    <string name="title_activity_dashboard">DashboardActivity</string>
+</resources>
