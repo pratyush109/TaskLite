@@ -258,55 +258,20 @@ fun HomeScreen(viewModel: TaskViewModel) {
 }
 
 // --- TASK ITEM ---
-@Composable
-fun TaskItem(task: Task, viewModel: TaskViewModel) {
-    var isEditing by remember { mutableStateOf(false) }
-    var editTitle by remember { mutableStateOf(task.title) }
-    var editDesc by remember { mutableStateOf(task.description) }
-    var editDate by remember { mutableStateOf(task.dueDate ?: "") }
-    var editStatus by remember { mutableStateOf(task.status ?: "Pending") }
-    var editCategory by remember { mutableStateOf(task.category ?: "Personal") }
-    var expandedStatus by remember { mutableStateOf(false) }
-    var expandedCategory by remember { mutableStateOf(false) }
 
-    val context = LocalContext.current
-    val statusOptions = listOf("Pending", "In Progress", "Completed")
-    val categoryOptions = listOf("Work", "Personal", "Shopping", "Other")
-
-    Card(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp), colors = CardDefaults.cardColors(containerColor = White)) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            if (isEditing) {
-                OutlinedTextField(editTitle, { editTitle = it }, label = { Text("Edit Title") }, modifier = Modifier.fillMaxWidth())
-                OutlinedTextField(editDesc, { editDesc = it }, label = { Text("Edit Description") }, modifier = Modifier.fillMaxWidth())
-                OutlinedTextField(editDate, {}, label = { Text("Edit Due Date") }, modifier = Modifier.fillMaxWidth().clickable {
-                    val current = if (editDate.isNotEmpty()) LocalDate.parse(editDate) else LocalDate.now()
-                    DatePickerDialog(context, { _, y, m, d -> editDate = LocalDate.of(y, m + 1, d).toString() }, current.year, current.monthValue - 1, current.dayOfMonth).show()
-                }, readOnly = true)
-
-                Row {
-                    Button({ viewModel.updateTask(task.id, editTitle, editDesc, editDate, editStatus, editCategory); isEditing = false }) { Text("Save") }
-                    Spacer(Modifier.width(8.dp))
-                    Button({ isEditing = false }) { Text("Cancel") }
-                }
-            } else {
-                Text(task.title, style = MaterialTheme.typography.titleMedium)
-                Text(task.description, style = MaterialTheme.typography.bodyMedium)
-                if (task.dueDate != null) Text("Due: ${task.dueDate}", style = MaterialTheme.typography.bodySmall)
-                if (task.status != null) Text("Status: ${task.status}", style = MaterialTheme.typography.bodySmall)
-                if (task.category != null) Text("Category: ${task.category}", style = MaterialTheme.typography.bodySmall)
-                Spacer(Modifier.height(4.dp))
-                Row {
-                    Button({ isEditing = true }) { Text("Edit") }
-                    Spacer(Modifier.width(8.dp))
-                    Button({ viewModel.deleteTask(task.id) }) { Text("Delete") }
-                }
-            }
-        }
-    }
-}
 
 // --- NOTIFICATIONS ---
-
+@Composable
+fun NotificationScreen(viewModel: TaskViewModel) {
+    val tasks by viewModel.tasks.collectAsState()
+    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+        Text("Notifications", style = MaterialTheme.typography.headlineMedium)
+        Spacer(Modifier.height(16.dp))
+        val recentTasks = tasks.takeLast(5)
+        if (recentTasks.isEmpty()) Text("No new notifications.")
+        else LazyColumn { items(recentTasks) { task -> Text("- ${task.title} [${task.status}]") } }
+    }
+}
 
 // --- PROFILE ---
 @Composable
