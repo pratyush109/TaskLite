@@ -1,56 +1,50 @@
 package com.example.tasklite.viewmodel
 
-import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
-import com.example.tasklite.model.Task
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
-import java.util.*
+import com.google.firebase.firestore.FirebaseFirestore
+import com.example.tasklite.model.Task
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
-class TaskViewModel : ViewModel() {
-    private val auth = FirebaseAuth.getInstance()
-    private val database = FirebaseDatabase.getInstance().getReference("tasks")
-    var tasks = mutableStateListOf<Task>()
-        private set
+open class TaskViewModel : ViewModel() {
+
+    private val db = FirebaseFirestore.getInstance()
+    private val uid = FirebaseAuth.getInstance().currentUser?.uid
+    private val _tasks = MutableStateFlow<List<Task>>(emptyList())
+    open val tasks: StateFlow<List<Task>> = _tasks
 
     init {
-        auth.currentUser?.let { user ->
-            database.child(user.uid).addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    tasks.clear()
-                    for (taskSnapshot in snapshot.children) {
-                        val task = taskSnapshot.getValue(Task::class.java)
-                        task?.let { tasks.add(it) }
-                    }
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    // Handle error
-                }
-            })
-        }
+        uid?.let { loadTasks(it) }
     }
 
-    fun addTask(title: String, description: String, dueDate: String?) {
-        val task = Task(UUID.randomUUID().toString(), title, description, dueDate)
-        auth.currentUser?.let { user ->
-            database.child(user.uid).child(task.id).setValue(task)
-        }
+    private fun loadTasks(userId: String) {
+        db.collection("users").document(userId).collection("tasks")
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) return@addSnapshotListener
+                val list = snapshot?.documents?.mapNotNull { doc ->
+                    doc.toObject(Task::class.java)?.copy(id = doc.id)
+                } ?: emptyList()
+                _tasks.value = list
+            }
     }
 
-    fun updateTask(taskId: String, newTitle: String, newDescription: String, newDueDate: String?) {
-        val task = Task(taskId, newTitle, newDescription, newDueDate)
-        auth.currentUser?.let { user ->
-            database.child(user.uid).child(taskId).setValue(task)
-        }
+    open fun addTask(title: String, description: String, dueDate: String, status: String, category: String) {
+        val userId = uid ?: return
+        val newTask = Task("", title, description, dueDate, status, category)
+        db.collection("users").document(userId).collection("tasks")
+            .add(newTask)
     }
 
-    fun deleteTask(taskId: String) {
-        auth.currentUser?.let { user ->
-            database.child(user.uid).child(taskId).removeValue()
-        }
+    open fun updateTask(id: String, title: String, description: String, dueDate: String, status: String, category: String) {
+        val userId = uid ?: return
+        db.collection("users").document(userId).collection("tasks").document(id)
+            .set(Task(id, title, description, dueDate, status, category))
+    }
+
+    open fun deleteTask(id: String) {
+        val userId = uid ?: return
+        db.collection("users").document(userId).collection("tasks").document(id)
+            .delete()
     }
 }

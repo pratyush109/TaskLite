@@ -52,19 +52,20 @@ fun SplashBody() {
     val activity = context.findActivity()
 
     LaunchedEffect(Unit) {
-        delay(1500)
+        delay(1500) // wait 1.5 seconds
 
-        // 🔥 check login state
+        // Check Firebase login state
         val currentUser = FirebaseAuth.getInstance().currentUser
 
+        // Decide which screen to go to
         val intent = if (currentUser != null) {
-            Intent(context, HomeActivity::class.java)
+            Intent(context, DashboardActivity::class.java)
         } else {
             Intent(context, LoginActivity::class.java)
         }
 
         context.startActivity(intent)
-        activity?.finish()
+        activity?.finish() // close SplashActivity so user cannot go back
     }
 
     Scaffold { padding ->
@@ -78,7 +79,6 @@ fun SplashBody() {
             verticalArrangement = Arrangement.Center
         ) {
 
-            // 👉 replace with your own logo in drawable
             Image(
                 painter = painterResource(R.drawable.ic_launcher_foreground),
                 contentDescription = "App Logo",
@@ -95,9 +95,7 @@ fun SplashBody() {
 
             Spacer(modifier = Modifier.height(30.dp))
 
-            CircularProgressIndicator(
-                color = White
-            )
+            CircularProgressIndicator(color = White)
         }
     }
 }

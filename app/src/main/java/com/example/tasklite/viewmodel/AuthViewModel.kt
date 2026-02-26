@@ -2,13 +2,24 @@ package com.example.tasklite.viewmodel
 
 import androidx.lifecycle.ViewModel
 import com.example.tasklite.repository.AuthRepository
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
-class AuthViewModel : ViewModel() {
+open class AuthViewModel : ViewModel() {
 
     private val repository = AuthRepository()
 
+    private val _isUserLoggedIn = MutableStateFlow(repository.getCurrentUser() != null)
+    val isUserLoggedIn: StateFlow<Boolean> = _isUserLoggedIn
+
     var isLoading = false
     var errorMessage: String? = null
+
+    init {
+        repository.addAuthStateListener {
+            _isUserLoggedIn.value = it
+        }
+    }
 
     // LOGIN FUNCTION
     fun login(
@@ -61,12 +72,12 @@ class AuthViewModel : ViewModel() {
     }
 
     // ✅ LOGOUT FUNCTION
-    fun logout() {
+    open fun logout() {
         repository.logout()
     }
 
     // ✅ GET CURRENT USER EMAIL
-    fun getCurrentUserEmail(): String? {
+    open fun getCurrentUserEmail(): String? {
         return repository.getCurrentUser()?.email
     }
 }

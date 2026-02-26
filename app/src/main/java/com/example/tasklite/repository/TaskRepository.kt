@@ -9,33 +9,35 @@ class TaskRepository {
     private val auth = FirebaseAuth.getInstance()
     private val database = FirebaseDatabase.getInstance().reference
 
-    private fun getUserTaskRef(): DatabaseReference {
-        val uid = auth.currentUser?.uid ?: return database
+    private fun userTaskRef(): DatabaseReference {
+        val uid = auth.currentUser?.uid ?: throw Exception("User not logged in")
         return database.child("tasks").child(uid)
     }
 
     fun addTask(task: Task) {
-        val key = getUserTaskRef().push().key ?: return
-        getUserTaskRef().child(key).setValue(task.copy(id = key))
+        val key = userTaskRef().push().key ?: return
+        userTaskRef().child(key).setValue(task.copy(id = key))
     }
 
     fun updateTask(task: Task) {
-        getUserTaskRef().child(task.id).setValue(task)
+        userTaskRef().child(task.id).setValue(task)
     }
 
     fun deleteTask(taskId: String) {
-        getUserTaskRef().child(taskId).removeValue()
+        userTaskRef().child(taskId).removeValue()
     }
 
-    fun observeTasks(listener: (List<Task>) -> Unit) {
-        getUserTaskRef().addValueEventListener(object : ValueEventListener {
+    fun observeTasks(onChange: (List<Task>) -> Unit) {
+        userTaskRef().addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val list = mutableListOf<Task>()
+
                 for (child in snapshot.children) {
                     val task = child.getValue(Task::class.java)
                     task?.let { list.add(it) }
                 }
-                listener(list)
+
+                onChange(list)
             }
 
             override fun onCancelled(error: DatabaseError) {}

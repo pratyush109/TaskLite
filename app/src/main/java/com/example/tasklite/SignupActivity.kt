@@ -69,7 +69,7 @@ fun SignupScreen(viewModel: AuthViewModel = viewModel()) {
             } else {
                 viewModel.signup(email, password) {
                     Toast.makeText(context, "Signup Successful", Toast.LENGTH_SHORT).show()
-                    context.startActivity(Intent(context, HomeActivity::class.java))
+                    context.startActivity(Intent(context, DashboardActivity::class.java))
                     (context as? ComponentActivity)?.finish()
                 }
             }
