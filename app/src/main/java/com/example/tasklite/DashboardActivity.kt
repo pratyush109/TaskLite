@@ -28,7 +28,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.tasklite.model.Task
 import com.example.tasklite.ui.theme.TaskLiteTheme
 import com.example.tasklite.ui.theme.White
 import com.google.firebase.auth.FirebaseAuth
@@ -58,8 +57,7 @@ class TaskViewModel : ViewModel() {
     private val db = FirebaseFirestore.getInstance()
 
     init {
-        // Listen to Firestore changes
-        db.collection("tasks").addSnapshotListener { snapshot, e ->
+        db.collection("tasks").addSnapshotListener { snapshot, _ ->
             if (snapshot != null) {
                 _tasks.value = snapshot.documents.map { doc ->
                     Task(
@@ -200,6 +198,7 @@ fun HomeScreen(viewModel: TaskViewModel) {
         OutlinedTextField(description, { description = it }, label = { Text("Task Description") }, modifier = Modifier.fillMaxWidth())
         Spacer(Modifier.height(8.dp))
 
+        // --- MAIN DATE PICKER FIXED ---
         Box(modifier = Modifier.fillMaxWidth()) {
             OutlinedTextField(
                 value = selectedDate.format(DateTimeFormatter.ISO_DATE),
@@ -209,11 +208,13 @@ fun HomeScreen(viewModel: TaskViewModel) {
                 trailingIcon = { Icon(Icons.Default.DateRange, contentDescription = "Pick Date") },
                 modifier = Modifier.fillMaxWidth()
             )
-            Spacer(modifier = Modifier.matchParentSize().clickable {
+            Box(modifier = Modifier.matchParentSize().clickable {
                 DatePickerDialog(
                     context,
                     { _, y, m, d -> selectedDate = LocalDate.of(y, m + 1, d) },
-                    selectedDate.year, selectedDate.monthValue - 1, selectedDate.dayOfMonth
+                    selectedDate.year,
+                    selectedDate.monthValue - 1,
+                    selectedDate.dayOfMonth
                 ).show()
             })
         }
@@ -221,7 +222,14 @@ fun HomeScreen(viewModel: TaskViewModel) {
         Spacer(Modifier.height(8.dp))
 
         ExposedDropdownMenuBox(expanded = expandedStatus, onExpandedChange = { expandedStatus = !expandedStatus }) {
-            TextField(value = status, onValueChange = {}, readOnly = true, label = { Text("Status") }, trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expandedStatus) }, modifier = Modifier.fillMaxWidth().menuAnchor())
+            TextField(
+                value = status,
+                onValueChange = {},
+                readOnly = true,
+                label = { Text("Status") },
+                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expandedStatus) },
+                modifier = Modifier.fillMaxWidth().menuAnchor()
+            )
             ExposedDropdownMenu(expandedStatus, onDismissRequest = { expandedStatus = false }) {
                 statusOptions.forEach { option -> DropdownMenuItem(text = { Text(option) }, onClick = { status = option; expandedStatus = false }) }
             }
@@ -230,7 +238,14 @@ fun HomeScreen(viewModel: TaskViewModel) {
         Spacer(Modifier.height(8.dp))
 
         ExposedDropdownMenuBox(expanded = expandedCategory, onExpandedChange = { expandedCategory = !expandedCategory }) {
-            TextField(value = category, onValueChange = {}, readOnly = true, label = { Text("Category") }, trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expandedCategory) }, modifier = Modifier.fillMaxWidth().menuAnchor())
+            TextField(
+                value = category,
+                onValueChange = {},
+                readOnly = true,
+                label = { Text("Category") },
+                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expandedCategory) },
+                modifier = Modifier.fillMaxWidth().menuAnchor()
+            )
             ExposedDropdownMenu(expandedCategory, onDismissRequest = { expandedCategory = false }) {
                 categoryOptions.forEach { option -> DropdownMenuItem(text = { Text(option) }, onClick = { category = option; expandedCategory = false }) }
             }
@@ -263,7 +278,7 @@ fun TaskItem(task: Task, viewModel: TaskViewModel) {
     var isEditing by remember { mutableStateOf(false) }
     var editTitle by remember { mutableStateOf(task.title) }
     var editDesc by remember { mutableStateOf(task.description) }
-    var editDate by remember { mutableStateOf(task.dueDate ?: "") }
+    var editDate by remember { mutableStateOf(task.dueDate ?: LocalDate.now().toString()) }
     var editStatus by remember { mutableStateOf(task.status ?: "Pending") }
     var editCategory by remember { mutableStateOf(task.category ?: "Personal") }
     var expandedStatus by remember { mutableStateOf(false) }
@@ -278,11 +293,30 @@ fun TaskItem(task: Task, viewModel: TaskViewModel) {
             if (isEditing) {
                 OutlinedTextField(editTitle, { editTitle = it }, label = { Text("Edit Title") }, modifier = Modifier.fillMaxWidth())
                 OutlinedTextField(editDesc, { editDesc = it }, label = { Text("Edit Description") }, modifier = Modifier.fillMaxWidth())
-                OutlinedTextField(editDate, {}, label = { Text("Edit Due Date") }, modifier = Modifier.fillMaxWidth().clickable {
-                    val current = if (editDate.isNotEmpty()) LocalDate.parse(editDate) else LocalDate.now()
-                    DatePickerDialog(context, { _, y, m, d -> editDate = LocalDate.of(y, m + 1, d).toString() }, current.year, current.monthValue - 1, current.dayOfMonth).show()
-                }, readOnly = true)
 
+                // --- EDIT DATE PICKER FIXED ---
+                Box(modifier = Modifier.fillMaxWidth()) {
+                    OutlinedTextField(
+                        value = editDate,
+                        onValueChange = {},
+                        label = { Text("Edit Due Date") },
+                        readOnly = true,
+                        trailingIcon = { Icon(Icons.Default.DateRange, contentDescription = "Pick Date") },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Box(modifier = Modifier.matchParentSize().clickable {
+                        val current = if (editDate.isNotEmpty()) LocalDate.parse(editDate) else LocalDate.now()
+                        DatePickerDialog(
+                            context,
+                            { _, y, m, d -> editDate = LocalDate.of(y, m + 1, d).toString() },
+                            current.year,
+                            current.monthValue - 1,
+                            current.dayOfMonth
+                        ).show()
+                    })
+                }
+
+                Spacer(Modifier.height(8.dp))
                 Row {
                     Button({ viewModel.updateTask(task.id, editTitle, editDesc, editDate, editStatus, editCategory); isEditing = false }) { Text("Save") }
                     Spacer(Modifier.width(8.dp))
@@ -368,13 +402,12 @@ fun CalendarScreen(viewModel: TaskViewModel) {
     }
 }
 
-
 // --- PREVIEW ---
 @Preview(showBackground = true)
 @Composable
 fun DashboardPreview() {
     TaskLiteTheme {
-        val fakeViewModel = TaskViewModel() // For preview we can just instantiate
+        val fakeViewModel = TaskViewModel()
         DashboardBody(fakeViewModel)
     }
 }
