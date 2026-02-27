@@ -6,5 +6,6 @@ data class Task(
     val description: String = "",
     val dueDate: String? = null,
     val status: String? = "Pending",
-    val category: String? = "Personal"
+    val category: String? = "Personal",
+    val createdAt: Long = System.currentTimeMillis() // add this
 )
