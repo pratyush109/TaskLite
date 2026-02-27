@@ -94,7 +94,7 @@ fun LoginScreen(viewModel: AuthViewModel?) {
 
                 viewModel?.login(email, password) {
                     Toast.makeText(context, "Login Successful", Toast.LENGTH_SHORT).show()
-                    context.startActivity(Intent(context, HomeActivity::class.java))
+                    context.startActivity(Intent(context, DashboardActivity::class.java))
                     (context as? ComponentActivity)?.finish()
                 }
             },
