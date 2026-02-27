@@ -5,9 +5,7 @@ import com.example.tasklite.repository.AuthRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-open class AuthViewModel : ViewModel() {
-
-    private val repository = AuthRepository()
+open class AuthViewModel(private val repository: AuthRepository = AuthRepository()) : ViewModel() {
 
     private val _isUserLoggedIn = MutableStateFlow(repository.getCurrentUser() != null)
     val isUserLoggedIn: StateFlow<Boolean> = _isUserLoggedIn

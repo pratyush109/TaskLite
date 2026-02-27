@@ -12,6 +12,61 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TaskLite">
         <activity
+            android:name=".CalendarScreen"
+            android:exported="true"
+            android:label="@string/title_activity_calendar_screen"
+            android:theme="@style/Theme.TaskLite">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ProfileScreen"
+            android:exported="true"
+            android:label="@string/title_activity_profile_screen"
+            android:theme="@style/Theme.TaskLite">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".NotificationScreen"
+            android:exported="true"
+            android:label="@string/title_activity_notification_screen"
+            android:theme="@style/Theme.TaskLite">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".TaskItem.kt"
+            android:exported="true"
+            android:label="@string/title_activity_task_item.kt"
+            android:theme="@style/Theme.TaskLite">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".HomeScreen"
+            android:exported="true"
+            android:label="@string/title_activity_home_screen"
+            android:theme="@style/Theme.TaskLite">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".DashboardActivity"
             android:exported="true"
             android:label="@string/title_activity_dashboard"
