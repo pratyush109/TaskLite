@@ -7,4 +7,9 @@
     <string name="title_activity_home">HomeActivity</string>
     <string name="title_activity_profile">ProfileActivity</string>
     <string name="title_activity_dashboard">DashboardActivity</string>
+    <string name="title_activity_home_screen">HomeScreen</string>
+    <string name="title_activity_task_item.kt">TaskItem.kt</string>
+    <string name="title_activity_notification_screen">NotificationScreen</string>
+    <string name="title_activity_profile_screen">ProfileScreen</string>
+    <string name="title_activity_calendar_screen">CalendarScreen</string>
 </resources>
