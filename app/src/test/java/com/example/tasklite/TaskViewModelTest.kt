@@ -24,7 +24,7 @@ class TaskViewModelTest {
 
         // Verify Firestore add was called with correct map
         verify(mockCollection).add(
-            argThat {
+            argThat<Map<String, Any>> {
                 this["title"] == "Test Task" &&
                         this["description"] == "Description" &&
                         this["dueDate"] == "2026-02-27" &&
@@ -50,7 +50,7 @@ class TaskViewModelTest {
 
         verify(mockCollection).document("123")
         verify(mockDoc).set(
-            argThat {
+            argThat<Map<String, Any>> {
                 this["title"] == "Updated" &&
                         this["description"] == "New Desc" &&
                         this["dueDate"] == "2026-03-01" &&

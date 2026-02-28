@@ -13,147 +13,69 @@
         android:theme="@style/Theme.TaskLite">
         <activity
             android:name=".CalendarScreen"
-            android:exported="true"
+            android:exported="false"
             android:label="@string/title_activity_calendar_screen"
-            android:theme="@style/Theme.TaskLite">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:theme="@style/Theme.TaskLite" />
         <activity
             android:name=".ProfileScreen"
-            android:exported="true"
+            android:exported="false"
             android:label="@string/title_activity_profile_screen"
-            android:theme="@style/Theme.TaskLite">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:theme="@style/Theme.TaskLite" />
         <activity
             android:name=".NotificationScreen"
-            android:exported="true"
+            android:exported="false"
             android:label="@string/title_activity_notification_screen"
-            android:theme="@style/Theme.TaskLite">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".TaskItem.kt"
-            android:exported="true"
-            android:label="@string/title_activity_task_item.kt"
-            android:theme="@style/Theme.TaskLite">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:theme="@style/Theme.TaskLite" />
         <activity
             android:name=".HomeScreen"
-            android:exported="true"
+            android:exported="false"
             android:label="@string/title_activity_home_screen"
-            android:theme="@style/Theme.TaskLite">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:theme="@style/Theme.TaskLite" />
         <activity
             android:name=".DashboardActivity"
-            android:exported="true"
+            android:exported="false"
             android:label="@string/title_activity_dashboard"
-            android:theme="@style/Theme.TaskLite">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:theme="@style/Theme.TaskLite" />
         <activity
             android:name=".ProfileActivity"
-            android:exported="true"
+            android:exported="false"
             android:label="@string/title_activity_profile"
-            android:theme="@style/Theme.TaskLite">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:theme="@style/Theme.TaskLite" />
         <activity
             android:name=".HomeActivity"
-            android:exported="true"
+            android:exported="false"
             android:label="@string/title_activity_home"
-            android:theme="@style/Theme.TaskLite">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:theme="@style/Theme.TaskLite" />
         <activity
             android:name=".ForgotPasswordActivity"
-            android:exported="true"
+            android:exported="false"
             android:label="@string/title_activity_forgot_password"
-            android:theme="@style/Theme.TaskLite">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:theme="@style/Theme.TaskLite" />
         <activity
             android:name=".SignupActivity"
-            android:exported="true"
+            android:exported="false"
             android:label="@string/title_activity_signup"
-            android:theme="@style/Theme.TaskLite">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:theme="@style/Theme.TaskLite" />
         <activity
-            android:name=".LoginActivity.kt"
-            android:exported="true"
-            android:label="@string/title_activity_login_activity.kt"
-            android:theme="@style/Theme.TaskLite">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:name=".LoginActivity"
+            android:exported="false"
+            android:label="@string/title_activity_login"
+            android:theme="@style/Theme.TaskLite" />
         <activity
-            android:name=".SplashActivity.kt"
+            android:name=".SplashActivity"
             android:exported="true"
-            android:label="@string/title_activity_splash_activity.kt"
+            android:label="@string/title_activity_splash"
             android:theme="@style/Theme.TaskLite">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".MainActivity"
-            android:exported="true"
+            android:exported="false"
             android:label="@string/app_name"
-            android:theme="@style/Theme.TaskLite">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:theme="@style/Theme.TaskLite" />
     </application>
 
 </manifest>

@@ -1,15 +1,15 @@
 <resources>
     <string name="app_name">TaskLite</string>
-    <string name="title_activity_splash_activity.kt">SplashActivity.kt</string>
-    <string name="title_activity_login_activity.kt">LoginActivity.kt</string>
-    <string name="title_activity_signup">SignupActivity</string>
-    <string name="title_activity_forgot_password">ForgotPasswordActivity</string>
-    <string name="title_activity_home">HomeActivity</string>
-    <string name="title_activity_profile">ProfileActivity</string>
-    <string name="title_activity_dashboard">DashboardActivity</string>
-    <string name="title_activity_home_screen">HomeScreen</string>
-    <string name="title_activity_task_item.kt">TaskItem.kt</string>
-    <string name="title_activity_notification_screen">NotificationScreen</string>
-    <string name="title_activity_profile_screen">ProfileScreen</string>
-    <string name="title_activity_calendar_screen">CalendarScreen</string>
+    <string name="title_activity_splash">Splash</string>
+    <string name="title_activity_login">Login</string>
+    <string name="title_activity_signup">Signup</string>
+    <string name="title_activity_forgot_password">Forgot Password</string>
+    <string name="title_activity_home">Home</string>
+    <string name="title_activity_profile">Profile</string>
+    <string name="title_activity_dashboard">Dashboard</string>
+    <string name="title_activity_home_screen">Home Screen</string>
+    <string name="title_activity_task_item">Task Item</string>
+    <string name="title_activity_notification_screen">Notification Screen</string>
+    <string name="title_activity_profile_screen">Profile Screen</string>
+    <string name="title_activity_calendar_screen">Calendar Screen</string>
 </resources>

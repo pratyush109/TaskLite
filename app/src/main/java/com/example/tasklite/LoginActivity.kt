@@ -12,6 +12,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -69,7 +70,9 @@ fun LoginScreen(viewModel: AuthViewModel?) {
             value = email,
             onValueChange = { email = it },
             label = { Text("Email") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .testTag("email")
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -79,7 +82,9 @@ fun LoginScreen(viewModel: AuthViewModel?) {
             onValueChange = { password = it },
             label = { Text("Password") },
             visualTransformation = PasswordVisualTransformation(),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .testTag("password")
         )
 
         Spacer(modifier = Modifier.height(24.dp))
@@ -95,14 +100,16 @@ fun LoginScreen(viewModel: AuthViewModel?) {
 
                     Toast.makeText(context, "Login Successful", Toast.LENGTH_SHORT).show()
 
-                    // 🔥 Go to Splash after login
-                    val intent = Intent(context, SplashActivity::class.java)
+                    // ✅ Go to Dashboard after login
+                    val intent = Intent(context, DashboardActivity::class.java)
                     context.startActivity(intent)
 
                     (context as? ComponentActivity)?.finish()
                 }
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .testTag("login_button")
         ) {
             if (isLoading) {
                 CircularProgressIndicator(
