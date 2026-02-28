@@ -23,13 +23,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.google.firebase.auth.FirebaseAuth
-import kotlinx.coroutines.delay
-
-// 👉 change these to your theme colors if different
 import com.example.tasklite.ui.theme.Blue
 import com.example.tasklite.ui.theme.White
 import com.example.tasklite.ui.theme.TaskLiteTheme
+import kotlinx.coroutines.delay
 
 class SplashActivity : ComponentActivity() {
 
@@ -52,20 +49,11 @@ fun SplashBody() {
     val activity = context.findActivity()
 
     LaunchedEffect(Unit) {
-        delay(1500) // wait 1.5 seconds
+        delay(1500) // Show splash for 1.5 seconds
 
-        // Check Firebase login state
-        val currentUser = FirebaseAuth.getInstance().currentUser
-
-        // Decide which screen to go to
-        val intent = if (currentUser != null) {
-            Intent(context, DashboardActivity::class.java)
-        } else {
-            Intent(context, LoginActivity::class.java)
-        }
-
+        val intent = Intent(context, LoginActivity::class.java)
         context.startActivity(intent)
-        activity?.finish() // close SplashActivity so user cannot go back
+        activity?.finish()
     }
 
     Scaffold { padding ->
@@ -108,14 +96,6 @@ fun SplashPreview() {
     }
 }
 
-/**
- * Finds the activity from a given context.
- *
- * This extension function is used to safely find the activity from a given context. It's
- * especially useful in Jetpack Compose previews, where the context is not an activity.
- *
- * @return The activity if found, or null otherwise.
- */
 fun Context.findActivity(): Activity? = when (this) {
     is Activity -> this
     is ContextWrapper -> baseContext.findActivity()

@@ -6,12 +6,10 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-class TaskViewModel : ViewModel() {
+class TaskViewModel(private val db: FirebaseFirestore = FirebaseFirestore.getInstance()) : ViewModel() {
 
     private val _tasks = MutableStateFlow<List<Task>>(emptyList())
     val tasks: StateFlow<List<Task>> = _tasks
-
-    private val db = FirebaseFirestore.getInstance()
 
     init {
         // Listen to Firestore changes

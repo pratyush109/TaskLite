@@ -43,7 +43,6 @@ fun LoginScreen(viewModel: AuthViewModel?) {
     var isLoading by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
 
-    // Observe ViewModel state
     if (viewModel != null) {
         LaunchedEffect(viewModel.isLoading, viewModel.errorMessage) {
             isLoading = viewModel.isLoading
@@ -93,8 +92,13 @@ fun LoginScreen(viewModel: AuthViewModel?) {
                 }
 
                 viewModel?.login(email, password) {
+
                     Toast.makeText(context, "Login Successful", Toast.LENGTH_SHORT).show()
-                    context.startActivity(Intent(context, DashboardActivity::class.java))
+
+                    // 🔥 Go to Splash after login
+                    val intent = Intent(context, SplashActivity::class.java)
+                    context.startActivity(intent)
+
                     (context as? ComponentActivity)?.finish()
                 }
             },
